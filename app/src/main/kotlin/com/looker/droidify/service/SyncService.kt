@@ -205,6 +205,7 @@ class SyncService : ConnectionService<SyncService.Binder>() {
         }
 
         fun setEnabled(repository: Repository, enabled: Boolean): Boolean {
+            if (!enabled && Repository.isFoxRepo(repository.address)) return false
             Database.RepositoryAdapter.put(repository.enable(enabled))
             val settings = runBlocking { settingsRepository.getInitial() }
             if (enabled) {
@@ -230,7 +231,9 @@ class SyncService : ConnectionService<SyncService.Binder>() {
 
         fun deleteRepository(repositoryId: Long): Boolean {
             val repository = Database.RepositoryAdapter.get(repositoryId)
-            return repository != null && run {
+            if (repository == null) return false
+            if (Repository.defaultRepositories.any { it.address == repository.address }) return false
+            return run {
                 setEnabled(repository, false)
                 Database.RepositoryAdapter.markAsDeleted(repository.id)
                 true

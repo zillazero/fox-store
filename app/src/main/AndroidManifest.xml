@@ -121,39 +121,6 @@
                 <data android:pathPattern="/fdroid/index/apk/.*" />
             </intent-filter>
 
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:host="droidify.eu.org" />
-                <data android:pathPattern="/app/.*" />
-            </intent-filter>
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <data android:host="droidify.app" />
-                <data android:pathPattern="/app/.*" />
-            </intent-filter>
-
-            <!--Adding repo with special url-->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="fdroidrepo" />
-                <data android:scheme="fdroidrepos" />
-            </intent-filter>
-
         </activity>
 
         <service

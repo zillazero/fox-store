@@ -82,6 +82,11 @@ class RepositoryFragment() : ScreenFragment() {
                 address.text.text = getString(stringRes.unknown)
             } else {
                 repoSwitch.isChecked = repository.enabled
+                // FOX Store: Hauptquelle fest, Standardquellen nicht löschbar/bearbeitbar
+                val isFox = com.looker.droidify.model.Repository.isFoxRepo(repository.address)
+                repoSwitch.isEnabled = !isFox
+                editRepoButton.visibility = android.view.View.GONE
+                deleteRepoButton.visibility = android.view.View.GONE
                 repoSwitch.setOnCheckedChangeListener { _, isChecked ->
                     viewModel.enabledRepository(isChecked)
                 }

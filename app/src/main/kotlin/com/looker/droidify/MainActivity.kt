@@ -27,7 +27,6 @@ import com.looker.droidify.installer.InstallManager
 import com.looker.droidify.installer.model.InstallItem
 import com.looker.droidify.ui.appDetail.AppDetailFragment
 import com.looker.droidify.ui.favourites.FavouritesFragment
-import com.looker.droidify.ui.repository.EditRepositoryFragment
 import com.looker.droidify.ui.repository.RepositoriesFragment
 import com.looker.droidify.ui.repository.RepositoryFragment
 import com.looker.droidify.ui.settings.SettingsFragment
@@ -113,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     private fun applyTheme(theme: Theme, dynamicTheme: Boolean) {
         val configuration = resources.configuration
         setTheme(configuration.getThemeRes(theme, dynamicTheme))
-        if (!SdkCheck.isSnowCake || !dynamicTheme) return
+        return // FOX Store: keine dynamischen Farben
         val overlay = if (configuration.isDarkTheme(theme)) {
             MaterialR.style.ThemeOverlay_Material3_DynamicColors_Dark
         } else {
@@ -334,12 +333,13 @@ class MainActivity : AppCompatActivity() {
 
     fun navigateRepositories() = pushFragment(RepositoriesFragment())
     fun navigatePreferences() = pushFragment(SettingsFragment.newInstance())
-    fun navigateAddRepository(repoAddress: String? = null) =
-        pushFragment(EditRepositoryFragment(null, repoAddress))
+    // FOX Store: keine fremden Quellen hinzufügen.
+    @Suppress("UNUSED_PARAMETER")
+    fun navigateAddRepository(repoAddress: String? = null) = Unit
 
     fun navigateRepository(repositoryId: Long) =
         pushFragment(RepositoryFragment(repositoryId))
 
-    fun navigateEditRepository(repositoryId: Long) =
-        pushFragment(EditRepositoryFragment(repositoryId, null))
+    @Suppress("UNUSED_PARAMETER")
+    fun navigateEditRepository(repositoryId: Long) = Unit
 }

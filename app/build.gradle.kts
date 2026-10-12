@@ -1,3 +1,4 @@
+import java.util.Properties
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {
@@ -18,18 +19,32 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.looker.droidify"
+        applicationId = "site.pk187.foxstore"
         minSdk = 23
-        versionName = "0.7.8"
-        versionCode = 780
+        versionName = "1.0.0"
+        versionCode = 1000
 
         testInstrumentationRunner = "com.looker.droidify.TestRunner"
     }
 
     androidResources.generateLocaleConfig = true
 
+    val foxKeyProps = Properties().apply {
+        val f = file(System.getenv("FOX_KEYSTORE_PROPERTIES") ?: "/workspace/fox-store-keys/keystore.properties")
+        if (f.exists()) f.inputStream().use { load(it) }
+    }
+    signingConfigs {
+        if (foxKeyProps.isNotEmpty()) create("fox") {
+            storeFile = file(foxKeyProps.getProperty("storeFile"))
+            storePassword = foxKeyProps.getProperty("storePassword")
+            keyAlias = foxKeyProps.getProperty("keyAlias")
+            keyPassword = foxKeyProps.getProperty("keyPassword")
+        }
+    }
+
     buildTypes {
         release {
+            signingConfigs.findByName("fox")?.let { signingConfig = it }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(

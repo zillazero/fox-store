@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- TV/D-Pad: sichtbarer 2-dp-Fokusrahmen in Akzentfarbe -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#1Fffffff" />
+            <stroke android:width="2dp" android:color="?attr/colorPrimary" />
+            <corners android:radius="3dp" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape android:shape="rectangle"><solid android:color="?attr/colorControlHighlight" /></shape>
+    </item>
+    <item><color android:color="@android:color/transparent" /></item>
+</selector>

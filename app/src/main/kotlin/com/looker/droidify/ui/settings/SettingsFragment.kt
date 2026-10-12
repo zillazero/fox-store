@@ -35,14 +35,8 @@ class SettingsFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val settings by viewModel.settings.collectAsStateWithLifecycle()
-                val isDarkTheme = when (settings.theme) {
-                    Theme.DARK, Theme.AMOLED -> true
-                    Theme.LIGHT -> false
-                    Theme.SYSTEM, Theme.SYSTEM_BLACK -> isSystemInDarkTheme()
-                }
                 DroidifyTheme(
-                    darkTheme = isDarkTheme,
-                    dynamicColor = settings.dynamicTheme,
+                    foxTheme = settings.theme,
                 ) {
                     SettingsScreen(
                         viewModel = viewModel,

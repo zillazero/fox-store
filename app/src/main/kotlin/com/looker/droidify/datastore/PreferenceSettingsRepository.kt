@@ -231,7 +231,7 @@ class PreferenceSettingsRepository(
         val notifyUpdate = preferences[NOTIFY_UPDATES] ?: true
         val unstableUpdate = preferences[UNSTABLE_UPDATES] ?: false
         val ignoreSignature = preferences[IGNORE_SIGNATURE] ?: false
-        val theme = Theme.valueOf(preferences[THEME] ?: Theme.SYSTEM.name)
+        val theme = Theme.fromStored(preferences[THEME])
         val dynamicTheme = preferences[DYNAMIC_THEME] ?: false
         val autoUpdate = preferences[AUTO_UPDATE] ?: false
         val autoSync = AutoSync.valueOf(preferences[AUTO_SYNC] ?: AutoSync.WIFI_ONLY.name)

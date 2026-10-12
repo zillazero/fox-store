@@ -140,4 +140,5 @@
     <color name="md_theme_d_surfaceContainer_mediumContrast">#1D211B</color>
     <color name="md_theme_d_surfaceContainerHigh_mediumContrast">#272B25</color>
     <color name="md_theme_d_surfaceContainerHighest_mediumContrast">#32362F</color>
+    <color name="fox_icon_bg">#0A0A0B</color>
 </resources>

@@ -1,5 +1,17 @@
 package com.looker.droidify.compose.settings
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.semantics.selectableGroup
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -158,16 +170,6 @@ fun SettingsScreen(
                 )
             }
 
-            if (SdkCheck.isSnowCake) {
-                item {
-                    SwitchSettingItem(
-                        title = stringResource(R.string.material_you),
-                        description = stringResource(R.string.material_you_desc),
-                        checked = settings.dynamicTheme,
-                        onCheckedChange = viewModel::setDynamicTheme,
-                    )
-                }
-            }
 
             item {
                 SwitchSettingItem(
@@ -420,23 +422,58 @@ private fun ThemeSetting(
     selectedTheme: Theme,
     onThemeSelected: (Theme) -> Unit,
 ) {
-    SelectionSettingItem(
-        title = stringResource(R.string.theme),
-        dialogTitle = stringResource(R.string.themes),
-        selectedValue = selectedTheme,
-        values = Theme.entries,
-        onValueSelected = onThemeSelected,
-        valueToString = { theme ->
-            when (theme) {
-                Theme.SYSTEM -> stringResource(R.string.system)
-                Theme.SYSTEM_BLACK -> "${stringResource(R.string.system)} ${stringResource(R.string.amoled)}"
-                Theme.LIGHT -> stringResource(R.string.light)
-                Theme.DARK -> stringResource(R.string.dark)
-                Theme.AMOLED -> stringResource(R.string.amoled)
+    // FOX Designsystem: Umschalter-Kacheln (Name + Akzent/Akzent 2 auf Theme-Hintergrund), D-Pad-bedienbar.
+    androidx.compose.foundation.layout.Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Text(stringResource(R.string.theme), style = MaterialTheme.typography.titleMedium)
+        androidx.compose.foundation.lazy.LazyRow(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .androidx_selectableGroup(),
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp),
+        ) {
+            items(Theme.entries.size) { i ->
+                val t = Theme.entries[i]
+                val selected = t == selectedTheme
+                var focused by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+                val accent = androidx.compose.ui.graphics.Color(t.accent)
+                androidx.compose.foundation.layout.Column(
+                    modifier = Modifier
+                        .width(112.dp)
+                        .androidx_border(
+                            width = if (selected || focused) 2.dp else 1.dp,
+                            color = when {
+                                focused -> accent
+                                selected -> androidx.compose.ui.graphics.Color.White
+                                else -> accent.copy(alpha = 0.24f)
+                            },
+                        )
+                        .androidx_bg(androidx.compose.ui.graphics.Color(t.bg))
+                        .androidx_onFocus { focused = it }
+                        .androidx_selectable(selected) { onThemeSelected(t) }
+                        .padding(10.dp),
+                ) {
+                    Text(
+                        (if (selected) "✓ " else "") + t.label.uppercase(),
+                        color = androidx.compose.ui.graphics.Color(t.text),
+                        style = MaterialTheme.typography.labelLarge,
+                    )
+                    androidx.compose.foundation.layout.Box(Modifier.padding(top = 6.dp).fillMaxWidth().height(6.dp).androidx_bg(accent))
+                    androidx.compose.foundation.layout.Box(Modifier.padding(top = 4.dp).fillMaxWidth().height(6.dp).androidx_bg(androidx.compose.ui.graphics.Color(t.accent2)))
+                }
             }
-        },
-    )
+        }
+    }
 }
+
+private fun Modifier.androidx_selectableGroup() = this.then(Modifier.semantics { selectableGroup() })
+private fun Modifier.androidx_border(width: androidx.compose.ui.unit.Dp, color: androidx.compose.ui.graphics.Color) =
+    this.then(Modifier.border(width, color, androidx.compose.foundation.shape.RoundedCornerShape(3.dp)))
+private fun Modifier.androidx_bg(color: androidx.compose.ui.graphics.Color) =
+    this.then(Modifier.background(color, androidx.compose.foundation.shape.RoundedCornerShape(3.dp)))
+private fun Modifier.androidx_onFocus(onChange: (Boolean) -> Unit) =
+    this.then(Modifier.onFocusChanged { onChange(it.isFocused) })
+private fun Modifier.androidx_selectable(selected: Boolean, onClick: () -> Unit) =
+    this.then(Modifier.selectable(selected = selected, role = androidx.compose.ui.semantics.Role.RadioButton, onClick = onClick))
 
 @Composable
 private fun AutoSyncSetting(

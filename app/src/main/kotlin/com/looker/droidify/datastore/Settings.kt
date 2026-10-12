@@ -30,7 +30,7 @@ data class Settings(
     val notifyUpdate: Boolean = true,
     val unstableUpdate: Boolean = false,
     val ignoreSignature: Boolean = false,
-    val theme: Theme = Theme.SYSTEM,
+    val theme: Theme = Theme.DEFAULT,
     val dynamicTheme: Boolean = false,
     val installerType: InstallerType = InstallerType.Default,
     val legacyInstallerComponent: LegacyInstallerComponent? = null,

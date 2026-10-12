@@ -71,11 +71,9 @@ class RepositoriesFragment : ScreenFragment(), CursorOwner.Callback {
         super.onCreateView(inflater, container, savedInstanceState)
         _binding = ScreenRepositoriesBinding.inflate(inflater, container, false)
         val view = fragmentBinding.root.apply {
-            binding.scanQr.apply {
-                setOnClickListener { scanQrCodeLauncher.launch(null) }
-            }
+            binding.scanQr.visibility = View.GONE // FOX Store: keine fremden Quellen
             binding.addRepo.apply {
-                setOnClickListener { mainActivity.navigateAddRepository() }
+                visibility = View.GONE
                 systemBarsMargin(16.dp)
             }
             binding.recyclerView.apply {

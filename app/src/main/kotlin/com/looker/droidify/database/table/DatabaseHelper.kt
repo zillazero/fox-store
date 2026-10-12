@@ -75,6 +75,7 @@ class DatabaseHelper(context: Context) :
     }
 
     private fun SQLiteDatabase.addOemRepositories() {
+        if (true) return // FOX Store: keine OEM-Fremdquellen
         OemRepositoryParser
             .getSystemDefaultRepos()
             ?.forEach { repo -> RepositoryAdapter.put(repo, database = this) }
@@ -82,7 +83,6 @@ class DatabaseHelper(context: Context) :
 
     private fun SQLiteDatabase.addDefaultRepositories() {
         (Repository.defaultRepositories + Repository.newRepos())
-            .sortedBy { it.name }
             .forEach { repo -> RepositoryAdapter.put(repo, database = this) }
     }
 

@@ -238,23 +238,40 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
+fun foxColorScheme(t: com.looker.droidify.datastore.model.Theme) = darkScheme.copy(
+    primary = androidx.compose.ui.graphics.Color(t.accent),
+    onPrimary = androidx.compose.ui.graphics.Color.Black,
+    primaryContainer = androidx.compose.ui.graphics.Color(t.accent),
+    onPrimaryContainer = androidx.compose.ui.graphics.Color.Black,
+    secondary = androidx.compose.ui.graphics.Color(t.accent2),
+    onSecondary = androidx.compose.ui.graphics.Color.Black,
+    secondaryContainer = androidx.compose.ui.graphics.Color(t.bg2),
+    onSecondaryContainer = androidx.compose.ui.graphics.Color(t.accent2),
+    tertiary = androidx.compose.ui.graphics.Color(t.accent2),
+    background = androidx.compose.ui.graphics.Color(t.bg),
+    onBackground = androidx.compose.ui.graphics.Color(t.text),
+    surface = androidx.compose.ui.graphics.Color(t.bg),
+    onSurface = androidx.compose.ui.graphics.Color(t.text),
+    surfaceVariant = androidx.compose.ui.graphics.Color(t.bg2),
+    onSurfaceVariant = androidx.compose.ui.graphics.Color(t.muted),
+    outline = androidx.compose.ui.graphics.Color(t.accent).copy(alpha = 0.24f),
+    outlineVariant = androidx.compose.ui.graphics.Color(t.accent).copy(alpha = 0.24f),
+    surfaceContainerLowest = androidx.compose.ui.graphics.Color(t.bg),
+    surfaceContainerLow = androidx.compose.ui.graphics.Color(t.bg2),
+    surfaceContainer = androidx.compose.ui.graphics.Color(t.bg2),
+    surfaceContainerHigh = androidx.compose.ui.graphics.Color(t.bg2),
+    surfaceContainerHighest = androidx.compose.ui.graphics.Color(t.bg2),
+    error = androidx.compose.ui.graphics.Color(0xFFFF3860),
+)
+
 @Composable
 fun DroidifyTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = false,
+    foxTheme: com.looker.droidify.datastore.model.Theme = com.looker.droidify.datastore.model.Theme.DEFAULT,
     content:
     @Composable()
     () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> darkScheme
-        else -> lightScheme
-    }
+    val colorScheme = foxColorScheme(foxTheme)
 
     MaterialTheme(
         colorScheme = colorScheme,

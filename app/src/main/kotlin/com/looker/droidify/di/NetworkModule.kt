@@ -36,7 +36,7 @@ object NetworkModule {
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()
-                        .header("User-Agent", "Droid-ify/${VERSION_NAME}-${BUILD_TYPE}")
+                        .header("User-Agent", "FOXStore/${VERSION_NAME}-${BUILD_TYPE}")
                         .build(),
                 )
             }

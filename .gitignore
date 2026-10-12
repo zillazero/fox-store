@@ -19,3 +19,8 @@ local.properties
 /core-datastore/build/
 /app/release/
 /.kotlin/
+
+# FOX Store: Schlüssel nie committen
+*.jks
+*.keystore
+keystore.properties
