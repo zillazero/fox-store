@@ -9,4 +9,4 @@ FOX-Designsystem mit fünf Themes, feste Hauptquelle apps.pk187.site, untergeord
 
 Der FOX Store steht in keiner Verbindung zum F-Droid-Projekt oder zu Droid-ify.
 „F-Droid“ ist eine Marke ihrer jeweiligen Inhaber und wird nur zur Bezeichnung der Quelle genannt.
-Quellcode: https://github.com/pk187/fox-store (geplant)
+Quellcode: https://github.com/zillazero/fox-store

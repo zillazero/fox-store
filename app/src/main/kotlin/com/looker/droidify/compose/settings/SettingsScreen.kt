@@ -69,6 +69,8 @@ private const val FOXY_DROID_TITLE = "FoxyDroid"
 private const val FOXY_DROID_URL = "https://github.com/kitsunyan/foxy-droid"
 private const val DROID_IFY_TITLE = "Droid-ify"
 private const val DROID_IFY_URL = "https://github.com/Droid-ify/client"
+private const val FOX_STORE_TITLE = "FOX Store"
+private const val FOX_STORE_URL = "https://github.com/zillazero/fox-store"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -391,8 +393,15 @@ fun SettingsScreen(
                         .versionName!!
                 }
                 ActionSettingItem(
+                    title = FOX_STORE_TITLE,
+                    description = "$currentVersion · Quellcode (GPL-3.0)",
+                    onClick = { context.openLink(FOX_STORE_URL) },
+                )
+            }
+            item {
+                ActionSettingItem(
                     title = DROID_IFY_TITLE,
-                    description = currentVersion,
+                    description = "Basiert auf Droid-ify (GPL-3.0)",
                     onClick = { context.openLink(DROID_IFY_URL) },
                 )
             }
