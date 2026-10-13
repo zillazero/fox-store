@@ -123,6 +123,21 @@
 
         </activity>
 
+        <activity
+            android:name=".filmverleih.FilmverleihActivity"
+            android:exported="true"
+            android:label="Filmverleih"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Rücksprung nach Bezahlung im Browser: foxstore://order/{id} -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="foxstore" android:host="order" />
+            </intent-filter>
+        </activity>
+
         <service
             android:name=".service.SyncService"
             android:foregroundServiceType="dataSync" />

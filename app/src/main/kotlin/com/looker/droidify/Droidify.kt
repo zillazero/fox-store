@@ -74,6 +74,7 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
         listenApplications()
         checkLanguage()
         updatePreference()
+        com.looker.droidify.filmverleih.ThemeSync.start(this, appScope, settingsRepository)
         appScope.launch { installer() }
         if (databaseUpdated) {
             appScope.launch {

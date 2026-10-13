@@ -231,6 +231,14 @@ class TabsFragment : ScreenFragment() {
                     Pair(menu.item, menuItems)
                 }
 
+            add(0, 0, 0, "Filmverleih")
+                .setIcon(toolbar.context.getMutatedIcon(R.drawable.ic_favourite_checked))
+                .setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_IF_ROOM)
+                .setOnMenuItemClickListener {
+                    startActivity(android.content.Intent(requireContext(), com.looker.droidify.filmverleih.FilmverleihActivity::class.java))
+                    true
+                }
+
             favouritesItem = add(1, 0, 0, stringRes.favourites)
                 .setIcon(toolbar.context.getMutatedIcon(R.drawable.ic_favourite_checked))
                 .setOnMenuItemClickListener {

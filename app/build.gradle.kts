@@ -21,8 +21,8 @@ android {
     defaultConfig {
         applicationId = "site.pk187.foxstore"
         minSdk = 23
-        versionName = "1.0.1"
-        versionCode = 1001
+        versionName = "1.1.0"
+        versionCode = 1100
 
         testInstrumentationRunner = "com.looker.droidify.TestRunner"
     }
@@ -144,6 +144,7 @@ dependencies {
     implementation(libs.serialization)
 
     implementation(libs.okhttp)
+    implementation("androidx.browser:browser:1.8.0")
     implementation(libs.bundles.room)
     ksp(libs.room.compiler)
 
