@@ -206,6 +206,9 @@ class SyncService : ConnectionService<SyncService.Binder>() {
 
         fun setEnabled(repository: Repository, enabled: Boolean): Boolean {
             if (!enabled && Repository.isFoxRepo(repository.address)) return false
+            if (enabled && com.looker.droidify.filmverleih.PrivateRepo.isPrivate(repository.address) &&
+                !com.looker.droidify.filmverleih.PrivateRepo.hasCredentials()
+            ) return false
             Database.RepositoryAdapter.put(repository.enable(enabled))
             val settings = runBlocking { settingsRepository.getInitial() }
             if (enabled) {

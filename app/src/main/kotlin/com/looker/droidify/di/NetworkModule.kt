@@ -33,6 +33,7 @@ object NetworkModule {
             .connectTimeout(30_000L, TimeUnit.MILLISECONDS)
             .readTimeout(15_000L, TimeUnit.MILLISECONDS)
             .writeTimeout(15_000L, TimeUnit.MILLISECONDS)
+            .addInterceptor(com.looker.droidify.filmverleih.PrivateRepo.interceptor)
             .addInterceptor { chain ->
                 chain.proceed(
                     chain.request().newBuilder()

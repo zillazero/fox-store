@@ -18,6 +18,17 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
+    <!-- FOX-SSO: nur Apps mit demselben Signaturschlüssel (FoxFin, FOX Player) -->
+    <permission
+        android:name="site.pk187.permission.SSO"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="site.pk187.permission.SSO" />
+
+    <queries>
+        <package android:name="site.pk187.foxfin" />
+        <package android:name="site.pk187.foxplayer" />
+    </queries>
+
     <uses-feature
         android:name="android.software.leanback"
         android:required="false" />
@@ -27,7 +38,7 @@
 
     <application
         android:name=".Droidify"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:banner="@drawable/tv_banner"
         android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher"
@@ -137,6 +148,12 @@
                 <data android:scheme="foxstore" android:host="order" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:name=".filmverleih.SsoProvider"
+            android:authorities="site.pk187.foxstore.sso"
+            android:exported="true"
+            android:permission="site.pk187.permission.SSO" />
 
         <service
             android:name=".service.SyncService"

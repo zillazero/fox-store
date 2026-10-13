@@ -67,6 +67,11 @@ class RepositoriesAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder as ViewHolder
         val repository = getRepository(position)
+        // FOX Store: Quelle „Privat“ nur zeigen, wenn Zugangsdaten vorhanden und nicht ausgeblendet
+        val hide = com.looker.droidify.filmverleih.PrivateRepo.isPrivate(repository.address) &&
+            !com.looker.droidify.filmverleih.PrivateRepo.isVisible()
+        holder.itemView.visibility = if (hide) android.view.View.GONE else android.view.View.VISIBLE
+        holder.itemView.layoutParams = holder.itemView.layoutParams.apply { height = if (hide) 0 else ViewGroup.LayoutParams.WRAP_CONTENT }
 
         holder.repoName.text = repository.name
         holder.repoDesc.text = repository.description.trim()

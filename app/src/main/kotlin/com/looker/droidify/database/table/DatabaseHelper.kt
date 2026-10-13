@@ -50,6 +50,8 @@ class DatabaseHelper(context: Context) :
     }
 
     override fun onOpen(db: SQLiteDatabase) {
+        // FOX Store: neue feste Quellen (z. B. „Privat“) auch bei bestehenden Installationen ergänzen
+        if (!db.isReadOnly) db.addNewlyAddedRepositories()
         // Handle memory tables and indexes
         db.execSQL("ATTACH DATABASE ':memory:' AS memory")
         handleTables(db, Schema.Installed, Schema.Lock)

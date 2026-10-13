@@ -131,7 +131,15 @@ data class Repository(
             ),
         )
 
-        fun newRepos(): List<Repository> = listOf()
+        fun newRepos(): List<Repository> = listOf(
+            defaultRepository(
+                address = "https://apps.pk187.site/private/repo",
+                name = "Privat",
+                description = "Geschützte Quelle (Zugangsdaten erforderlich).",
+                enabled = false,
+                fingerprint = "EA6F1CB7C0A11202EBBCA033D9A51AA6E765854952F25FCE62609E8EBFCAA36B",
+            ),
+        )
 
         fun addressesToRemove(): List<String> = listOf(
             // Add repository addresses that should be removed during database upgrades and remove them from the lists above

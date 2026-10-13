@@ -150,6 +150,8 @@ private fun FilmverleihScreen(
         Spacer(Modifier.height(8.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Tab.entries.forEach { t -> FoxButton(t.label, primary = t == tab) { tab = t } }
+            FoxButton("Filme ansehen", primary = false) { FoxApps.open(context, FoxApps.FOXFIN) }
+            FoxButton("Live-TV", primary = false) { FoxApps.open(context, FoxApps.FOXPLAYER) }
         }
         if (returnedOrder != null) {
             Notice("Danke! Bestellung #$returnedOrder ist eingegangen. Den Status siehst du unter „Meine Pakete“ bzw. im Kundenkonto.", onDismissOrder)
@@ -359,6 +361,7 @@ private fun PackagesTab(
         }
         return
     }
+    val ctx = LocalContext.current
     var packages by remember { mutableStateOf<MyPackages?>(null) }
     var creds by remember { mutableStateOf<Credentials?>(null) }
     var links by remember { mutableStateOf<PlayerLinks?>(null) }
@@ -403,7 +406,9 @@ private fun PackagesTab(
                         if (pl != null) Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 6.dp)) {
                             listOf("Live" to pl.live, "Filme (VOD)" to pl.vod).forEach { (label, t) ->
                                 val url = t?.webUrl
-                                if (t != null && t.allowed && t.available && url != null) FoxButton("▶ $label", small = true) { open(url) }
+                                if (t != null && t.allowed && t.available && url != null) FoxButton("▶ $label", small = true) {
+                                    FoxApps.open(ctx, if (label == "Live") FoxApps.FOXPLAYER else FoxApps.FOXFIN, url)
+                                }
                                 else Text("$label: ${reasonDe(t?.reason)}", style = MaterialTheme.typography.labelSmall)
                             }
                         }
@@ -519,15 +524,16 @@ private fun AccountTab(
             item { Text("Angemeldet als ${me?.displayName ?: "…"}", style = MaterialTheme.typography.titleMedium) }
             me?.let { m -> item { Text("${m.username} · ${m.email}", style = MaterialTheme.typography.bodySmall) } }
             item { Text("Dein Design wird mit dem Shop abgeglichen (Einstellungen › Design).", style = MaterialTheme.typography.bodySmall) }
+            item { Text("FoxFin und FOX Player melden sich automatisch über den FOX Store an (eigene Sitzung je App).", style = MaterialTheme.typography.bodySmall) }
             error?.let { e -> item { Text(e, color = MaterialTheme.colorScheme.error) } }
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FoxButton("Kundenkonto im Shop") { open(ShopConfig.MEIN_KONTO) }
                     FoxButton("Abmelden", primary = false) {
-                        scope.launch { api.logout(); me = null; setLoggedIn(false) }
+                        scope.launch { api.logout(); ThemeSync.clear(context); me = null; setLoggedIn(false) }
                     }
-                    FoxButton("Alle Geräte abmelden", primary = false) {
-                        scope.launch { api.logout(all = true); me = null; setLoggedIn(false) }
+                    FoxButton("Überall abmelden (alle Apps & Geräte)", primary = false) {
+                        scope.launch { api.logout(all = true); ThemeSync.clear(context); me = null; setLoggedIn(false) }
                     }
                 }
             }

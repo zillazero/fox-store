@@ -148,6 +148,31 @@ class ShopApi(context: Context) {
     suspend fun putTheme(theme: String): ThemeState =
         json.decodeFromString(authed("PUT", "/theme", buildJsonObject { put("theme", theme) }))
 
+    // ---- Stufe 4: SSO + Sync ----
+    /** Neue, eigene Sitzung für eine andere FOX-App (POST /app/exchange). */
+    suspend fun exchange(clientId: String, deviceName: String?): TokenResponse =
+        json.decodeFromString(
+            authed("POST", "/app/exchange", buildJsonObject {
+                put("client_id", clientId); put("device_name", deviceName ?: deviceName())
+            }),
+        )
+
+    suspend fun getSyncSettings(): SyncSettings = json.decodeFromString(authed("GET", "/sync/settings"))
+
+    /** PUT /sync/settings mit Konfliktschutz; 409 → [SettingsConflict] mit Server-Stand. */
+    suspend fun putSyncSettings(theme: String, baseUpdatedAt: String?): SyncSettings = try {
+        json.decodeFromString(
+            authed("PUT", "/sync/settings", buildJsonObject {
+                put("theme", theme); baseUpdatedAt?.let { put("base_updated_at", it) }
+            }),
+        )
+    } catch (e: ShopException) {
+        if (e.status == 409) throw SettingsConflict(lastErrorBody?.let { runCatching { json.decodeFromString<SyncSettings>(it) }.getOrNull() })
+        throw e
+    }
+
+    @Volatile private var lastErrorBody: String? = null
+
     // ---- Stufe 2 ----
     suspend fun myPackages(): MyPackages = json.decodeFromString(authed("GET", "/my-packages"))
     suspend fun playerLinks(): PlayerLinks = json.decodeFromString(authed("GET", "/player/links"))
@@ -223,6 +248,9 @@ class ShopApi(context: Context) {
             resp.use {
                 val text = it.body.string()
                 if (it.isSuccessful) return@withContext text
+                lastErrorBody = runCatching {
+                    (json.parseToJsonElement(text) as JsonObject)["server"]?.toString()
+                }.getOrNull()
                 val code = runCatching {
                     json.parseToJsonElement(text).let { el -> (el as JsonObject)["code"]?.toString()?.trim('"') }
                 }.getOrNull() ?: "http_${it.code}"
@@ -329,3 +357,11 @@ data class CheckoutSummary(
 
 @Serializable
 data class CheckoutLink(val url: String, @SerialName("expires_in") val expiresIn: Int = 300, val summary: CheckoutSummary? = null)
+
+@Serializable
+data class SyncSettings(
+    val theme: String? = null, val sounds: Boolean? = null, val animations: Boolean? = null,
+    @SerialName("updated_at") val updatedAt: String? = null,
+)
+
+class SettingsConflict(val server: SyncSettings?) : Exception("Server-Stand ist neuer")

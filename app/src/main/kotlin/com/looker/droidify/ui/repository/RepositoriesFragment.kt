@@ -73,7 +73,9 @@ class RepositoriesFragment : ScreenFragment(), CursorOwner.Callback {
         val view = fragmentBinding.root.apply {
             binding.scanQr.visibility = View.GONE // FOX Store: keine fremden Quellen
             binding.addRepo.apply {
-                visibility = View.GONE
+                // FOX Store: einziger Zusatz ist die geschützte Quelle „Privat“
+                text = "Private Quelle"
+                setOnClickListener { showPrivateDialog() }
                 systemBarsMargin(16.dp)
             }
             binding.recyclerView.apply {
@@ -102,6 +104,60 @@ class RepositoriesFragment : ScreenFragment(), CursorOwner.Callback {
         return view
     }
 
+    private fun privateRepository() = com.looker.droidify.database.Database.RepositoryAdapter.getAll()
+        .firstOrNull { com.looker.droidify.filmverleih.PrivateRepo.isPrivate(it.address) }
+
+    private fun showPrivateDialog() {
+        val ctx = requireContext()
+        val pr = com.looker.droidify.filmverleih.PrivateRepo
+        val pad = (20 * resources.displayMetrics.density).toInt()
+        val user = android.widget.EditText(ctx).apply { hint = "Benutzername"; setSingleLine() }
+        val pass = android.widget.EditText(ctx).apply {
+            hint = "Passwort"; setSingleLine()
+            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
+        }
+        val box = android.widget.LinearLayout(ctx).apply {
+            orientation = android.widget.LinearLayout.VERTICAL; setPadding(pad, pad / 2, pad, 0)
+            addView(android.widget.TextView(ctx).apply {
+                text = if (pr.hasCredentials()) "Angemeldet als ${pr.username()}. Neue Zugangsdaten überschreiben die alten." else
+                    "Zugangsdaten für die geschützte Quelle eingeben. Sie werden verschlüsselt auf diesem Gerät gespeichert."
+            })
+            addView(user); addView(pass)
+        }
+        val dlg = com.google.android.material.dialog.MaterialAlertDialogBuilder(ctx)
+            .setTitle("Quelle „Privat“")
+            .setView(box)
+            .setPositiveButton("Speichern") { _, _ ->
+                val u = user.text.toString().trim(); val p = pass.text.toString()
+                if (u.isEmpty() || p.isEmpty()) return@setPositiveButton
+                pr.save(u, p)
+                privateRepository()?.let { syncConnection.binder?.setEnabled(it, true) }
+                binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+            .setNegativeButton("Abbrechen", null)
+        if (pr.hasCredentials()) {
+            dlg.setNeutralButton(if (pr.isHidden()) "Einblenden" else "Ausblenden") { _, _ ->
+                val hide = !pr.isHidden()
+                pr.setHidden(hide)
+                privateRepository()?.let { syncConnection.binder?.setEnabled(it, !hide) }
+                binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+        }
+        val shown = dlg.show()
+        if (pr.hasCredentials()) {
+            // Abmelden/entfernen über langen Druck auf "Abbrechen" wäre versteckt → eigener Button im Text
+            box.addView(com.google.android.material.button.MaterialButton(ctx).apply {
+                text = "Abmelden & Zugangsdaten entfernen"
+                setOnClickListener {
+                    privateRepository()?.let { syncConnection.binder?.setEnabled(it, false) }
+                    pr.clear()
+                    binding.recyclerView.adapter?.notifyDataSetChanged()
+                    shown.dismiss()
+                }
+            })
+        }
+    }
+
     private fun handleFab() {
         binding.recyclerView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
             if (scrollY > oldScrollY) {
@@ -109,7 +165,6 @@ class RepositoriesFragment : ScreenFragment(), CursorOwner.Callback {
                 binding.scanQr.hide()
             } else {
                 binding.addRepo.extend()
-                binding.scanQr.show()
             }
         }
     }
