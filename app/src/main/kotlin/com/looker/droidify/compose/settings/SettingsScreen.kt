@@ -245,6 +245,14 @@ fun SettingsScreen(
 
             item {
                 ActionSettingItem(
+                    title = "Einführung anzeigen",
+                    description = "Einführung und Einrichtung (Theme, Auto-Updates) erneut durchlaufen",
+                    onClick = { (context as? android.app.Activity)?.let { com.looker.droidify.fox.FoxIntro.reopen(it) } },
+                )
+            }
+
+            item {
+                ActionSettingItem(
                     title = stringResource(R.string.fox_crash_reports),
                     description = stringResource(R.string.fox_crash_reports_desc, com.looker.droidify.fox.FoxCrash.count(context)),
                     onClick = { com.looker.droidify.fox.FoxCrash.export(context) },

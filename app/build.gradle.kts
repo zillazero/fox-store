@@ -21,8 +21,8 @@ android {
     defaultConfig {
         applicationId = "site.pk187.foxstore"
         minSdk = 23
-        versionName = "1.4.0"
-        versionCode = 1400
+        versionName = "1.5.0"
+        versionCode = 1500
 
         testInstrumentationRunner = "com.looker.droidify.TestRunner"
     }

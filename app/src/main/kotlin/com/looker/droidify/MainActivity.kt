@@ -137,6 +137,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         if (savedInstanceState == null) com.looker.droidify.fox.FoxSplash.show(this)
+        if (com.looker.droidify.fox.FoxIntro.shouldShow(this)) com.looker.droidify.fox.FoxIntro.show(
+            this, EntryPointAccessors.fromApplication(this, CustomUserRepositoryInjector::class.java).settingsRepository())
 
         requestNotificationPermission(request = notificationPermission::launch)
 

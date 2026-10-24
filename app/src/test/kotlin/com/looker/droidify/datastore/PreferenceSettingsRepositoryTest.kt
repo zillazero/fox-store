@@ -51,7 +51,7 @@ class PreferenceSettingsRepositoryTest {
     fun `getInitial returns default settings`() = runTest {
         val settings = repository.getInitial()
         assertEquals("system", settings.language)
-        assertEquals(Theme.SYSTEM, settings.theme)
+        assertEquals(Theme.DEFAULT, settings.theme)
         assertEquals(AutoSync.WIFI_ONLY, settings.autoSync)
         assertEquals(SortOrder.UPDATED, settings.sortOrder)
         assertFalse(settings.dynamicTheme)
@@ -59,9 +59,9 @@ class PreferenceSettingsRepositoryTest {
 
     @Test
     fun `setTheme updates theme setting`() = runTest {
-        repository.setTheme(Theme.DARK)
+        repository.setTheme(Theme.AMBER)
         val settings = repository.getInitial()
-        assertEquals(Theme.DARK, settings.theme)
+        assertEquals(Theme.AMBER, settings.theme)
     }
 
     @Test

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:ordering="together">
+    <objectAnimator android:propertyName="scaleX" android:valueFrom="0.86" android:valueTo="1" android:duration="420" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+    <objectAnimator android:propertyName="scaleY" android:valueFrom="0.86" android:valueTo="1" android:duration="420" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+    <set android:ordering="sequentially">
+        <objectAnimator android:propertyName="scaleX" android:valueFrom="1" android:valueTo="1" android:duration="420"/>
+        <objectAnimator android:propertyName="scaleX" android:valueFrom="1" android:valueTo="1.05" android:duration="190" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        <objectAnimator android:propertyName="scaleX" android:valueFrom="1.05" android:valueTo="1" android:duration="190" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+    </set>
+    <set android:ordering="sequentially">
+        <objectAnimator android:propertyName="scaleY" android:valueFrom="1" android:valueTo="1" android:duration="420"/>
+        <objectAnimator android:propertyName="scaleY" android:valueFrom="1" android:valueTo="1.05" android:duration="190" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+        <objectAnimator android:propertyName="scaleY" android:valueFrom="1.05" android:valueTo="1" android:duration="190" android:interpolator="@android:interpolator/fast_out_slow_in"/>
+    </set>
+</set>

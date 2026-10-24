@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Gemeinsames FOX-Designpaket (identisch zu FoxDesign.kt / Foxfin FoxDesign). -->
+<resources>
+    <dimen name="fox_radius_s">8dp</dimen>
+    <dimen name="fox_radius_m">12dp</dimen>
+    <dimen name="fox_radius_l">16dp</dimen>
+    <dimen name="fox_space_xs">4dp</dimen>
+    <dimen name="fox_space_s">8dp</dimen>
+    <dimen name="fox_space_m">16dp</dimen>
+    <dimen name="fox_space_l">24dp</dimen>
+    <dimen name="fox_text_caption">12sp</dimen>
+    <dimen name="fox_text_body">14sp</dimen>
+    <dimen name="fox_text_body_l">16sp</dimen>
+    <dimen name="fox_text_title">20sp</dimen>
+    <dimen name="fox_text_headline">24sp</dimen>
+    <dimen name="fox_text_display">32sp</dimen>
+</resources>

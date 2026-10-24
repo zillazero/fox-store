@@ -26,8 +26,8 @@ object FoxSplash {
             setBackgroundColor(Color.parseColor("#0A0A0B"))
             isClickable = true
         }
-        val glow = ImageView(activity).apply { setImageResource(R.drawable.splash_f7); alpha = 0f }
-        val icon = ImageView(activity).apply { setImageResource(R.drawable.splash_f0) }
+        val glow = ImageView(activity).apply { setImageResource(R.drawable.ic_launcher_foreground); alpha = 0f }
+        val icon = ImageView(activity).apply { setImageResource(R.drawable.ic_launcher_foreground) }
         val size = (240 * dp).toInt()
         overlay.addView(glow, FrameLayout.LayoutParams(size, size, Gravity.CENTER))
         overlay.addView(icon, FrameLayout.LayoutParams(size, size, Gravity.CENTER))

@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<animation-list xmlns:android="http://schemas.android.com/apk/res/android" android:oneshot="true">
-    <item android:drawable="@drawable/splash_f0" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f1" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f2" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f3" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f4" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f5" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f6" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f7" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f6" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f5" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f4" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f3" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f2" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f1" android:duration="50"/>
-    <item android:drawable="@drawable/splash_f0" android:duration="50"/>
-</animation-list>
+<!-- FOX Start (Logo A), Vektor statt PNG-Frames: Einblenden + sanfter Puls, 800 ms. -->
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android" android:drawable="@drawable/splash_logo">
+    <target android:name="logo" android:animation="@animator/fox_splash_pulse"/>
+</animated-vector>

@@ -1,5 +1,6 @@
 package com.looker.droidify.ui.appDetail
 
+import com.looker.droidify.datastore.get
 import android.content.Context
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -28,10 +29,11 @@ import com.looker.droidify.utility.common.extension.asStateFlow
 import com.looker.droidify.utility.extension.combine
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @HiltViewModel
 class AppDetailViewModel @Inject constructor(
@@ -82,9 +84,12 @@ class AppDetailViewModel @Inject constructor(
             )
         }.asStateFlow(AppDetailUiState())
 
+    // 1.5.0: Einstellung als StateFlow vorhalten statt runBlocking auf dem Main-Thread.
+    private val installerTypeState = settingsRepository.get { installerType }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     fun shizukuState(context: Context): ShizukuState? {
-        val isSelected =
-            runBlocking { settingsRepository.getInitial().installerType == InstallerType.SHIZUKU }
+        val isSelected = installerTypeState.value == InstallerType.SHIZUKU
         if (!isSelected) return null
         val isAlive = isShizukuAlive()
         val isSuiAvailable = isSuiAvailable()
@@ -94,7 +99,10 @@ class AppDetailViewModel @Inject constructor(
             if (isShizukuGranted()) {
                 true
             } else {
-                runBlocking { requestPermissionListener() }
+                // 1.5.0: Berechtigungsdialog asynchron anfragen statt den Main-Thread zu blockieren;
+                // der Zustand wird beim naechsten Aufruf neu gelesen.
+                viewModelScope.launch { requestPermissionListener() }
+                false
             }
         } else {
             false

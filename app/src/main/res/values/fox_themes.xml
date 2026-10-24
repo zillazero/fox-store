@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- FOX Designsystem, generiert aus tokens.json -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Fox.Foxhole" parent="Theme.Main.Dark">
         <item name="colorPrimary">#ff3b30</item>
         <item name="colorOnPrimary">#000000</item>
@@ -28,7 +28,7 @@
         <item name="colorControlHighlight">#3Dff3b30</item>
         <item name="selectableItemBackground">@drawable/fox_focus_background</item>
         <item name="android:fontFamily">@font/inter_latin_400_normal</item>
-        <item name="android:defaultFocusHighlightEnabled">false</item>
+        <item name="android:defaultFocusHighlightEnabled" tools:targetApi="o">false</item>
         <item name="android:statusBarColor">#111214</item>
         <item name="android:navigationBarColor">#0a0a0b</item>
     </style>
@@ -59,7 +59,7 @@
         <item name="colorControlHighlight">#3Dff2d6f</item>
         <item name="selectableItemBackground">@drawable/fox_focus_background</item>
         <item name="android:fontFamily">@font/inter_latin_400_normal</item>
-        <item name="android:defaultFocusHighlightEnabled">false</item>
+        <item name="android:defaultFocusHighlightEnabled" tools:targetApi="o">false</item>
         <item name="android:statusBarColor">#111214</item>
         <item name="android:navigationBarColor">#0a0a0b</item>
     </style>
@@ -90,7 +90,7 @@
         <item name="colorControlHighlight">#3Dffb000</item>
         <item name="selectableItemBackground">@drawable/fox_focus_background</item>
         <item name="android:fontFamily">@font/inter_latin_400_normal</item>
-        <item name="android:defaultFocusHighlightEnabled">false</item>
+        <item name="android:defaultFocusHighlightEnabled" tools:targetApi="o">false</item>
         <item name="android:statusBarColor">#111214</item>
         <item name="android:navigationBarColor">#0a0a0b</item>
     </style>
@@ -121,7 +121,7 @@
         <item name="colorControlHighlight">#3D19d26b</item>
         <item name="selectableItemBackground">@drawable/fox_focus_background</item>
         <item name="android:fontFamily">@font/inter_latin_400_normal</item>
-        <item name="android:defaultFocusHighlightEnabled">false</item>
+        <item name="android:defaultFocusHighlightEnabled" tools:targetApi="o">false</item>
         <item name="android:statusBarColor">#111214</item>
         <item name="android:navigationBarColor">#0a0a0b</item>
     </style>
@@ -152,7 +152,7 @@
         <item name="colorControlHighlight">#3D4d8bff</item>
         <item name="selectableItemBackground">@drawable/fox_focus_background</item>
         <item name="android:fontFamily">@font/inter_latin_400_normal</item>
-        <item name="android:defaultFocusHighlightEnabled">false</item>
+        <item name="android:defaultFocusHighlightEnabled" tools:targetApi="o">false</item>
         <item name="android:statusBarColor">#0a1328</item>
         <item name="android:navigationBarColor">#050a17</item>
     </style>
