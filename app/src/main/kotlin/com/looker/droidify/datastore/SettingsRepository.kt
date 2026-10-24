@@ -51,6 +51,8 @@ interface SettingsRepository {
 
     suspend fun setAutoUpdateCharging(charging: Boolean)
 
+    suspend fun setAutoUpdateNightOnly(night: Boolean)
+
     suspend fun setSelfUpdate(enabled: Boolean)
 
     suspend fun setAutoSync(autoSync: AutoSync)

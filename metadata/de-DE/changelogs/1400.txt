@@ -1,0 +1,8 @@
+FOX Store 1.4.0
+- Neues Logo (Variante A) und neues TV-Banner
+- Animierter Startbildschirm (Fuchs glüht kurz auf), respektiert reduzierte/aus Animationen
+- Größere Kacheln auf dem Fernseher, weichere Übergänge
+- Kurze Änderungsnotiz pro Update in der Update-Benachrichtigung
+- Neue Option: Updates nur nachts (1–6 Uhr)
+- Lokale Absturzberichte mit Export (nichts wird automatisch gesendet)
+- Schneller: kombinierter DB-Index, feste Bild-Cache-Grenzen je Gerät (Stick 48 MB / Shield 192 MB)

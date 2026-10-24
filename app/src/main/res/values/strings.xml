@@ -315,4 +315,8 @@
     <string name="fox_self_update">FOX Store selbst aktualisieren</string>
     <string name="fox_self_update_desc">Neue Store-Versionen aus apps.pk187.site automatisch installieren</string>
     <string name="fox_auto_update_note">Ab Android 12 laufen Updates von Apps, die der FOX Store installiert hat, still im Hintergrund. Sonst erscheint eine Benachrichtigung zum Installieren mit einem Tipp.</string>
+    <string name="fox_auto_update_night">Nur nachts</string>
+    <string name="fox_auto_update_night_desc">Automatische Updates nur zwischen 1 und 6 Uhr (höchstens einmal pro Nacht)</string>
+    <string name="fox_crash_reports">Absturzberichte exportieren</string>
+    <string name="fox_crash_reports_desc">Nur lokal gespeichert, nie automatisch gesendet. Vorhanden: %1$d</string>
 </resources>

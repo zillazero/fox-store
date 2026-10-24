@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="@dimen/fox_item_height"
     android:layout_marginHorizontal="@dimen/shape_margin_medium">
 
     <LinearLayout
@@ -15,8 +15,8 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/icon"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
+            android:layout_width="@dimen/fox_item_icon"
+            android:layout_height="@dimen/fox_item_icon"
             app:shapeAppearanceOverlay="@style/Shape.Small"
             tools:ignore="ContentDescription" />
 

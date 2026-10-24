@@ -130,6 +130,8 @@ class PreferenceSettingsRepository(
 
     override suspend fun setAutoUpdateCharging(charging: Boolean) = FOX_AU_CHARGING.update(charging)
 
+    override suspend fun setAutoUpdateNightOnly(night: Boolean) = FOX_AU_NIGHT.update(night)
+
     override suspend fun setSelfUpdate(enabled: Boolean) = FOX_SELF_UPDATE.update(enabled)
 
     override suspend fun setAutoSync(autoSync: AutoSync) =
@@ -293,6 +295,7 @@ class PreferenceSettingsRepository(
             autoUpdateIntervalHours = preferences[FOX_AU_INTERVAL] ?: 6,
             autoUpdateWifiOnly = preferences[FOX_AU_WIFI] ?: true,
             autoUpdateCharging = preferences[FOX_AU_CHARGING] ?: false,
+            autoUpdateNightOnly = preferences[FOX_AU_NIGHT] ?: false,
             selfUpdate = preferences[FOX_SELF_UPDATE] ?: true,
         )
     }
@@ -323,6 +326,7 @@ class PreferenceSettingsRepository(
         val FOX_AU_INTERVAL = intPreferencesKey("fox_auto_update_interval_h")
         val FOX_AU_WIFI = booleanPreferencesKey("fox_auto_update_wifi_only")
         val FOX_AU_CHARGING = booleanPreferencesKey("fox_auto_update_charging")
+        val FOX_AU_NIGHT = booleanPreferencesKey("fox_auto_update_night_only")
         val FOX_SELF_UPDATE = booleanPreferencesKey("fox_self_update")
         val HOME_SCREEN_SWIPING = booleanPreferencesKey("key_home_swiping")
         val DELETE_APK_ON_INSTALL = booleanPreferencesKey("key_delete_apk_on_install")
@@ -396,6 +400,7 @@ class PreferenceSettingsRepository(
             set(FOX_AU_INTERVAL, settings.autoUpdateIntervalHours)
             set(FOX_AU_WIFI, settings.autoUpdateWifiOnly)
             set(FOX_AU_CHARGING, settings.autoUpdateCharging)
+            set(FOX_AU_NIGHT, settings.autoUpdateNightOnly)
             set(FOX_SELF_UPDATE, settings.selfUpdate)
             return this.toPreferences()
         }

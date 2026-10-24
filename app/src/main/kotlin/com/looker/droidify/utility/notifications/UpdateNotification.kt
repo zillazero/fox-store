@@ -45,6 +45,8 @@ fun updatesAvailableNotification(
         NotificationCompat.InboxStyle().also {
             for (productItem in productItems.take(MAX_UPDATE_NOTIFICATION)) {
                 it.addLine("${productItem.name} ${productItem.version}")
+                // FOX Store 1.4.0: kurze Änderungsnotiz pro Update (erste Zeile, max. 80 Zeichen)
+                foxShortChanges(productItem)?.let { note -> it.addLine("   \u2022 $note") }
             }
             if (productItems.size > MAX_UPDATE_NOTIFICATION) {
                 val summary =
@@ -61,3 +63,13 @@ fun updatesAvailableNotification(
         },
     )
     .build()
+
+
+/** Erste sinnvolle Zeile aus "Was ist neu" (Sprache des Geräts, sonst Englisch), gekürzt. */
+internal fun foxShortChanges(item: ProductItem): String? = runCatching {
+    com.looker.droidify.database.Database.ProductAdapter.get(item.packageName, null)
+        .firstOrNull { it.repositoryId == item.repositoryId }?.whatsNew
+        ?.lineSequence()?.map { it.trim().trimStart('-', '*', '\u2022').trim() }
+        ?.firstOrNull { it.isNotEmpty() }
+        ?.let { if (it.length > 80) it.take(79) + "\u2026" else it }
+}.getOrNull()

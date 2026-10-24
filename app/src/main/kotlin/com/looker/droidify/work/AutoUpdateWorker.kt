@@ -35,8 +35,11 @@ class AutoUpdateWorker(
 
     companion object {
         private const val TAG = "FoxAutoUpdate"
+        private const val KEY_NIGHT = "night"
+        private const val KEY_HOURS = "hours"
+        private const val PREFS = "fox_auto_update_state"
 
-        fun schedule(context: Context, enabled: Boolean, hours: Int, wifiOnly: Boolean, charging: Boolean) {
+        fun schedule(context: Context, enabled: Boolean, hours: Int, wifiOnly: Boolean, charging: Boolean, nightOnly: Boolean = false) {
             val wm = WorkManager.getInstance(context)
             if (!enabled) {
                 wm.cancelUniqueWork(TAG)
@@ -49,14 +52,29 @@ class AutoUpdateWorker(
                 .setRequiresStorageNotLow(true)
                 .build()
             val request = PeriodicWorkRequestBuilder<AutoUpdateWorker>(
-                hours.coerceIn(1, 168).toLong(), TimeUnit.HOURS,
-            ).setConstraints(constraints).build()
+                // "Nur nachts": stündlich wecken, gearbeitet wird nur zwischen 1 und 6 Uhr
+                (if (nightOnly) 1 else hours.coerceIn(1, 168)).toLong(), TimeUnit.HOURS,
+            ).setConstraints(constraints)
+                .setInputData(androidx.work.workDataOf(KEY_NIGHT to nightOnly, KEY_HOURS to hours))
+                .build()
             wm.enqueueUniquePeriodicWork(TAG, ExistingPeriodicWorkPolicy.UPDATE, request)
             Log.i(TAG, "scheduled every ${hours}h wifi=$wifiOnly charging=$charging")
         }
     }
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.Main) {
+    override suspend fun doWork(): Result {
+        if (inputData.getBoolean(KEY_NIGHT, false)) {
+            val hour = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)
+            if (hour !in 1..5) return Result.success()
+            val prefs = applicationContext.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val last = prefs.getLong("last_night_run", 0L)
+            if (System.currentTimeMillis() - last < 12 * 3600 * 1000L) return Result.success()
+            prefs.edit().putLong("last_night_run", System.currentTimeMillis()).apply()
+        }
+        return runSync()
+    }
+
+    private suspend fun runSync(): Result = withContext(Dispatchers.Main) {
         var connection: Connection<SyncService.Binder, SyncService>? = null
         try {
             val binder = suspendCancellableCoroutine { cont ->

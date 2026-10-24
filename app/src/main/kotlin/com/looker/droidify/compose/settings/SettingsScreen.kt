@@ -236,6 +236,23 @@ fun SettingsScreen(
 
             item {
                 SwitchSettingItem(
+                    title = stringResource(R.string.fox_auto_update_night),
+                    description = stringResource(R.string.fox_auto_update_night_desc),
+                    checked = settings.autoUpdateNightOnly,
+                    onCheckedChange = viewModel::setAutoUpdateNightOnly,
+                )
+            }
+
+            item {
+                ActionSettingItem(
+                    title = stringResource(R.string.fox_crash_reports),
+                    description = stringResource(R.string.fox_crash_reports_desc, com.looker.droidify.fox.FoxCrash.count(context)),
+                    onClick = { com.looker.droidify.fox.FoxCrash.export(context) },
+                )
+            }
+
+            item {
+                SwitchSettingItem(
                     title = stringResource(R.string.fox_self_update),
                     description = stringResource(R.string.fox_self_update_desc),
                     checked = settings.selfUpdate,

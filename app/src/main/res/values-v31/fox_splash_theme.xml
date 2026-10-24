@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MainTheme" parent="Base.MainTheme.Light">
+        <item name="colorError">?android:attr/colorError</item>
+        <!-- FOX Store 1.4.0: animierter Start (Fuchs glüht/pulsiert in Foxhole-Rot, 750 ms) -->
+        <item name="android:windowSplashScreenBackground">@color/fox_icon_bg</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/splash_anim</item>
+        <item name="android:windowSplashScreenAnimationDuration">750</item>
+    </style>
+</resources>

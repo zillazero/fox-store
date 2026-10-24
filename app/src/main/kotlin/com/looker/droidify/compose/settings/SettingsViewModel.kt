@@ -108,6 +108,7 @@ class SettingsViewModel @Inject constructor(
     fun setAutoUpdateInterval(v: Int) { viewModelScope.launch { settingsRepository.setAutoUpdateInterval(v) } }
     fun setAutoUpdateWifiOnly(v: Boolean) { viewModelScope.launch { settingsRepository.setAutoUpdateWifiOnly(v) } }
     fun setAutoUpdateCharging(v: Boolean) { viewModelScope.launch { settingsRepository.setAutoUpdateCharging(v) } }
+    fun setAutoUpdateNightOnly(v: Boolean) { viewModelScope.launch { settingsRepository.setAutoUpdateNightOnly(v) } }
     fun setSelfUpdate(v: Boolean) { viewModelScope.launch { settingsRepository.setSelfUpdate(v) } }
 
     fun setNotifyUpdates(enabled: Boolean) {

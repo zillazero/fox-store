@@ -136,6 +136,8 @@ class MainActivity : AppCompatActivity() {
             ),
         )
 
+        if (savedInstanceState == null) com.looker.droidify.fox.FoxSplash.show(this)
+
         requestNotificationPermission(request = notificationPermission::launch)
 
         supportFragmentManager.addFragmentOnAttachListener { _, _ ->
@@ -206,7 +208,7 @@ class MainActivity : AppCompatActivity() {
                 (if (open) Int.MIN_VALUE else Int.MAX_VALUE).toFloat()
         }
         supportFragmentManager.commit {
-            if (open != null) {
+            if (open != null && com.looker.droidify.fox.FoxDevice.motion(this@MainActivity) != com.looker.droidify.fox.FoxDevice.Motion.AUS) {
                 setCustomAnimations(
                     if (open) R.animator.slide_in else 0,
                     if (open) R.animator.slide_in_keep else R.animator.slide_out,

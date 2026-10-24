@@ -55,6 +55,7 @@ data class Settings(
     val autoUpdateIntervalHours: Int = 6,
     val autoUpdateWifiOnly: Boolean = true,
     val autoUpdateCharging: Boolean = false,
+    val autoUpdateNightOnly: Boolean = false,
     val selfUpdate: Boolean = true,
 )
 

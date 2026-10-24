@@ -70,6 +70,7 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
 
     override fun onCreate() {
         super.onCreate()
+        com.looker.droidify.fox.FoxCrash.install(this)
 
         val databaseUpdated = Database.init(this)
         ProductPreferences.init(this, appScope)
@@ -132,11 +133,12 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
             launch {
                 // FOX Store: Auto-Update-Worker (auch für Store-Selbst-Update)
                 settingsRepository.data
-                    .map { listOf(it.autoUpdate || it.selfUpdate, it.autoUpdateIntervalHours, it.autoUpdateWifiOnly, it.autoUpdateCharging) }
+                    .map { listOf(it.autoUpdate || it.selfUpdate, it.autoUpdateIntervalHours, it.autoUpdateWifiOnly, it.autoUpdateCharging, it.autoUpdateNightOnly) }
                     .distinctUntilChanged()
-                    .collect { (enabled, hours, wifi, charging) ->
+                    .collect { (enabled, hours, wifi, charging, night) ->
                         AutoUpdateWorker.schedule(
                             applicationContext, enabled as Boolean, hours as Int, wifi as Boolean, charging as Boolean,
+                            night as Boolean,
                         )
                     }
             }
@@ -174,19 +176,26 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         val memoryCache = MemoryCache.Builder()
             // FOX Store: auf Low-RAM-Sticks (z. B. waipu.tv 4K Stick, ~2 GB) kleinerer Bild-Cache
-            .maxSizePercent(context, if (isLowMemoryDevice()) 0.12 else 0.25)
+            .maxSizePercent(context, if (isLowMemoryDevice()) 0.10 else 0.25)
             .build()
 
         val diskCache = DiskCache.Builder()
             .directory(Cache.getImagesDir(this))
-            .maxSizePercent(0.05)
+            // FOX Store 1.4.0: feste Obergrenze je Geräteprofil (Stick 48 MB, Shield 192 MB)
+            .maxSizeBytes(if (isLowMemoryDevice()) 48L * 1024 * 1024 else 192L * 1024 * 1024)
             .build()
 
         return ImageLoader.Builder(this)
             .memoryCache(memoryCache)
             .diskCache(diskCache)
             .error(getDrawableCompat(R.drawable.ic_cannot_load).asImage())
-            .crossfade(350)
+            .crossfade(
+                when (com.looker.droidify.fox.FoxDevice.motion(this)) {
+                    com.looker.droidify.fox.FoxDevice.Motion.AUS -> 0
+                    com.looker.droidify.fox.FoxDevice.Motion.REDUZIERT -> 120
+                    com.looker.droidify.fox.FoxDevice.Motion.NORMAL -> 250
+                },
+            )
             .components {
                 add(OkHttpNetworkFetcherFactory(callFactory = { httpClient }))
                 add(FallbackIconInterceptor())

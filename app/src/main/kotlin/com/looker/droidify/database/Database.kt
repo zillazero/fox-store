@@ -59,12 +59,21 @@ object Database {
             db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_added ON $p (${Schema.Product.ROW_ADDED})")
             db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_name ON $p (${Schema.Product.ROW_NAME})")
             db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_repo ON $p (${Schema.Product.ROW_REPOSITORY_ID})")
+            // FOX Store 1.4.0: kombinierter Index für die Hauptliste (Quelle + kompatibel + Name)
+            db.execSQL(
+                "CREATE INDEX IF NOT EXISTS fox_product_list ON $p " +
+                    "(${Schema.Product.ROW_REPOSITORY_ID}, ${Schema.Product.ROW_COMPATIBLE}, ${Schema.Product.ROW_NAME})",
+            )
             // Verwaiste Produkte gelöschter Quellen entfernen
             db.execSQL(
                 "DELETE FROM $p WHERE ${Schema.Product.ROW_REPOSITORY_ID} NOT IN " +
                     "(SELECT ${Schema.Repository.ROW_ID} FROM ${Schema.Repository.name} WHERE ${Schema.Repository.ROW_DELETED} == 0)",
             )
             db.rawQuery("PRAGMA optimize", null).close()
+            // FOX Store 1.4.0: schnellere Schreibzugriffe und Vorwärmen der Seiten-Caches
+            runCatching { db.rawQuery("PRAGMA synchronous=NORMAL", null).close() }
+            runCatching { db.rawQuery("PRAGMA temp_store=MEMORY", null).close() }
+            runCatching { db.rawQuery("SELECT count(*) FROM $p", null).use { it.moveToFirst() } }
         }.onFailure { it.printStackTrace() }
     }
 
