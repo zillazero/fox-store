@@ -50,6 +50,12 @@ data class Settings(
     val deleteApkOnInstall: Boolean = false,
     val dlStatsEnabled: Boolean = true,
     val rbLogsEnabled: Boolean = true,
+    // FOX Store 1.3.0: Auto-Update
+    val autoUpdateFoxOnly: Boolean = true,
+    val autoUpdateIntervalHours: Int = 6,
+    val autoUpdateWifiOnly: Boolean = true,
+    val autoUpdateCharging: Boolean = false,
+    val selfUpdate: Boolean = true,
 )
 
 @OptIn(ExperimentalSerializationApi::class)

@@ -18,6 +18,7 @@ class CursorOwner : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
             val section: ProductItem.Section,
             val order: SortOrder,
             val skipSignatureCheck: Boolean = false,
+            val foxMode: Database.FoxMode = Database.FoxMode.NONE,
         ) : Request(1)
 
         data class Installed(
@@ -89,6 +90,8 @@ class CursorOwner : Fragment(), LoaderManager.LoaderCallbacks<Cursor> {
                             order = request.order,
                             signal = it,
                             skipSignatureCheck = request.skipSignatureCheck,
+                            foxMode = request.foxMode,
+                            foxRepoId = Database.foxRepoId(),
                         )
 
                 is Request.Installed ->

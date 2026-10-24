@@ -45,10 +45,37 @@ object Database {
         val helper = DatabaseHelper(context)
         db = helper.writableDatabase
         RepositoryAdapter.removeDuplicates()
+        optimize()
         return helper.created || helper.updated
     }
 
     private lateinit var db: SQLiteDatabase
+
+    /** FOX Store: Performance-Trim (Indizes, Altlasten, Planner-Statistik). Fehler sind nie fatal. */
+    private fun optimize() {
+        runCatching {
+            val p = Schema.Product.name
+            db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_updated ON $p (${Schema.Product.ROW_UPDATED})")
+            db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_added ON $p (${Schema.Product.ROW_ADDED})")
+            db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_name ON $p (${Schema.Product.ROW_NAME})")
+            db.execSQL("CREATE INDEX IF NOT EXISTS fox_product_repo ON $p (${Schema.Product.ROW_REPOSITORY_ID})")
+            // Verwaiste Produkte gelöschter Quellen entfernen
+            db.execSQL(
+                "DELETE FROM $p WHERE ${Schema.Product.ROW_REPOSITORY_ID} NOT IN " +
+                    "(SELECT ${Schema.Repository.ROW_ID} FROM ${Schema.Repository.name} WHERE ${Schema.Repository.ROW_DELETED} == 0)",
+            )
+            db.rawQuery("PRAGMA optimize", null).close()
+        }.onFailure { it.printStackTrace() }
+    }
+
+    /** ID der festen FOX-Hauptquelle oder -1. */
+    fun foxRepoId(): Long = runCatching {
+        RepositoryAdapter.getAll().firstOrNull {
+            com.looker.droidify.model.Repository.isFoxRepo(it.address)
+        }?.id
+    }.getOrNull() ?: -1L
+
+    enum class FoxMode { NONE, EXCLUDE, FIRST, ONLY }
 
     object Schema {
         object Repository : Table {
@@ -499,6 +526,22 @@ object Database {
                 }
             }
 
+        suspend fun getFoxApps(): List<ProductItem> = withContext(Dispatchers.IO) {
+            val fox = foxRepoId()
+            if (fox < 0) return@withContext emptyList()
+            query(
+                installed = false, updates = false, searchQuery = "",
+                section = ProductItem.Section.All, order = SortOrder.UPDATED, signal = null,
+                foxMode = FoxMode.ONLY, foxRepoId = fox,
+            ).use { it.asSequence().map(ProductAdapter::transformItem).toList() }
+        }
+
+        fun getFoxAppsStream(): Flow<List<ProductItem>> = flowOf(Unit)
+            .onCompletion { if (it == null) emitAll(flowCollection(Subject.Products)) }
+            .onEach { delay(50) }
+            .map { getFoxApps() }
+            .flowOn(Dispatchers.IO)
+
         fun getUpdatesStream(skipSignatureCheck: Boolean): Flow<List<ProductItem>> = flowOf(Unit)
             .onCompletion { if (it == null) emitAll(flowCollection(Subject.Products)) }
             // Crashes due to immediate retrieval of data?
@@ -571,6 +614,8 @@ object Database {
             section: ProductItem.Section,
             order: SortOrder,
             signal: CancellationSignal?,
+            foxMode: FoxMode = FoxMode.NONE,
+            foxRepoId: Long = -1L,
         ): Cursor {
             val builder = QueryBuilder()
 
@@ -634,6 +679,11 @@ object Database {
             if (searchQuery.isNotEmpty()) {
                 builder += """AND ${Schema.Synthetic.ROW_MATCH_RANK} > 0"""
             }
+            if (foxRepoId >= 0) when (foxMode) {
+                FoxMode.EXCLUDE -> builder += "AND product.${Schema.Product.ROW_REPOSITORY_ID} != $foxRepoId"
+                FoxMode.ONLY -> builder += "AND product.${Schema.Product.ROW_REPOSITORY_ID} = $foxRepoId"
+                else -> Unit
+            }
 
             builder += "GROUP BY product.${Schema.Product.ROW_PACKAGE_NAME} HAVING 1"
 
@@ -641,6 +691,9 @@ object Database {
                 builder += "AND ${Schema.Synthetic.ROW_CAN_UPDATE}"
             }
             builder += "ORDER BY"
+            if (foxMode == FoxMode.FIRST && foxRepoId >= 0) {
+                builder += "(product.${Schema.Product.ROW_REPOSITORY_ID} = $foxRepoId) DESC,"
+            }
 
             if (searchQuery.isNotEmpty()) {
                 builder += """${Schema.Synthetic.ROW_MATCH_RANK} DESC,"""

@@ -43,6 +43,16 @@ interface SettingsRepository {
 
     suspend fun setAutoUpdate(allow: Boolean)
 
+    suspend fun setAutoUpdateFoxOnly(foxOnly: Boolean)
+
+    suspend fun setAutoUpdateInterval(hours: Int)
+
+    suspend fun setAutoUpdateWifiOnly(wifiOnly: Boolean)
+
+    suspend fun setAutoUpdateCharging(charging: Boolean)
+
+    suspend fun setSelfUpdate(enabled: Boolean)
+
     suspend fun setAutoSync(autoSync: AutoSync)
 
     suspend fun setSortOrder(sortOrder: SortOrder)

@@ -104,6 +104,12 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    fun setAutoUpdateFoxOnly(v: Boolean) { viewModelScope.launch { settingsRepository.setAutoUpdateFoxOnly(v) } }
+    fun setAutoUpdateInterval(v: Int) { viewModelScope.launch { settingsRepository.setAutoUpdateInterval(v) } }
+    fun setAutoUpdateWifiOnly(v: Boolean) { viewModelScope.launch { settingsRepository.setAutoUpdateWifiOnly(v) } }
+    fun setAutoUpdateCharging(v: Boolean) { viewModelScope.launch { settingsRepository.setAutoUpdateCharging(v) } }
+    fun setSelfUpdate(v: Boolean) { viewModelScope.launch { settingsRepository.setSelfUpdate(v) } }
+
     fun setNotifyUpdates(enabled: Boolean) {
         viewModelScope.launch {
             settingsRepository.enableNotifyUpdates(enabled)

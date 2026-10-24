@@ -32,6 +32,9 @@ import com.looker.droidify.utility.common.extension.getDrawableCompat
 import com.looker.droidify.utility.common.extension.getInstalledPackagesCompat
 import com.looker.droidify.utility.extension.toInstalledItem
 import com.looker.droidify.work.CleanUpWorker
+import com.looker.droidify.work.AutoUpdateWorker
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import kotlinx.coroutines.CoroutineScope
@@ -127,6 +130,17 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
                 }
             }
             launch {
+                // FOX Store: Auto-Update-Worker (auch für Store-Selbst-Update)
+                settingsRepository.data
+                    .map { listOf(it.autoUpdate || it.selfUpdate, it.autoUpdateIntervalHours, it.autoUpdateWifiOnly, it.autoUpdateCharging) }
+                    .distinctUntilChanged()
+                    .collect { (enabled, hours, wifi, charging) ->
+                        AutoUpdateWorker.schedule(
+                            applicationContext, enabled as Boolean, hours as Int, wifi as Boolean, charging as Boolean,
+                        )
+                    }
+            }
+            launch {
                 settingsRepository.get { cleanUpInterval }.collect {
                     if (it == INFINITE) {
                         CleanUpWorker.removeAllSchedules(applicationContext)
@@ -143,9 +157,24 @@ class Droidify : Application(), SingletonImageLoader.Factory, Configuration.Prov
             .setWorkerFactory(workerFactory)
             .build()
 
+    private fun isLowMemoryDevice(): Boolean {
+        val am = getSystemService(android.app.ActivityManager::class.java) ?: return false
+        val info = android.app.ActivityManager.MemoryInfo().also { am.getMemoryInfo(it) }
+        return am.isLowRamDevice || info.totalMem < 3L * 1024 * 1024 * 1024 || am.memoryClass <= 192
+    }
+
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        // Bei Speicherdruck Bild-Cache freigeben (wichtig auf 2-GB-TV-Sticks)
+        if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) {
+            runCatching { coil3.SingletonImageLoader.get(this).memoryCache?.clear() }
+        }
+    }
+
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         val memoryCache = MemoryCache.Builder()
-            .maxSizePercent(context, 0.25)
+            // FOX Store: auf Low-RAM-Sticks (z. B. waipu.tv 4K Stick, ~2 GB) kleinerer Bild-Cache
+            .maxSizePercent(context, if (isLowMemoryDevice()) 0.12 else 0.25)
             .build()
 
         val diskCache = DiskCache.Builder()

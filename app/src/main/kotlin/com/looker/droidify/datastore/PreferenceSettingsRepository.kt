@@ -121,6 +121,17 @@ class PreferenceSettingsRepository(
     override suspend fun setAutoUpdate(allow: Boolean) =
         AUTO_UPDATE.update(allow)
 
+    override suspend fun setAutoUpdateFoxOnly(foxOnly: Boolean) = FOX_AU_FOX_ONLY.update(foxOnly)
+
+    override suspend fun setAutoUpdateInterval(hours: Int) =
+        FOX_AU_INTERVAL.update(hours.coerceIn(1, 168))
+
+    override suspend fun setAutoUpdateWifiOnly(wifiOnly: Boolean) = FOX_AU_WIFI.update(wifiOnly)
+
+    override suspend fun setAutoUpdateCharging(charging: Boolean) = FOX_AU_CHARGING.update(charging)
+
+    override suspend fun setSelfUpdate(enabled: Boolean) = FOX_SELF_UPDATE.update(enabled)
+
     override suspend fun setAutoSync(autoSync: AutoSync) =
         AUTO_SYNC.update(autoSync.name)
 
@@ -278,6 +289,11 @@ class PreferenceSettingsRepository(
             deleteApkOnInstall = deleteApkOnInstall,
             dlStatsEnabled = downloadStatisticsEnabled,
             rbLogsEnabled = reproducibilityLogsEnabled,
+            autoUpdateFoxOnly = preferences[FOX_AU_FOX_ONLY] ?: true,
+            autoUpdateIntervalHours = preferences[FOX_AU_INTERVAL] ?: 6,
+            autoUpdateWifiOnly = preferences[FOX_AU_WIFI] ?: true,
+            autoUpdateCharging = preferences[FOX_AU_CHARGING] ?: false,
+            selfUpdate = preferences[FOX_SELF_UPDATE] ?: true,
         )
     }
 
@@ -303,6 +319,11 @@ class PreferenceSettingsRepository(
         val RB_MIRROR_INDEX = intPreferencesKey("key_rb_logs_mirror_index")
         val LAST_MODIFIED_DS = longPreferencesKey("key_last_modified_download_stats")
         val FAVOURITE_APPS = stringSetPreferencesKey("key_favourite_apps")
+        val FOX_AU_FOX_ONLY = booleanPreferencesKey("fox_auto_update_fox_only")
+        val FOX_AU_INTERVAL = intPreferencesKey("fox_auto_update_interval_h")
+        val FOX_AU_WIFI = booleanPreferencesKey("fox_auto_update_wifi_only")
+        val FOX_AU_CHARGING = booleanPreferencesKey("fox_auto_update_charging")
+        val FOX_SELF_UPDATE = booleanPreferencesKey("fox_self_update")
         val HOME_SCREEN_SWIPING = booleanPreferencesKey("key_home_swiping")
         val DELETE_APK_ON_INSTALL = booleanPreferencesKey("key_delete_apk_on_install")
         val DOWNLOAD_STATISTICS_ENABLED = booleanPreferencesKey("key_download_statistics_enabled")
@@ -371,6 +392,11 @@ class PreferenceSettingsRepository(
             set(DELETE_APK_ON_INSTALL, settings.deleteApkOnInstall)
             set(DOWNLOAD_STATISTICS_ENABLED, settings.dlStatsEnabled)
             set(REPRODUCIBILITY_LOGS_ENABLED, settings.rbLogsEnabled)
+            set(FOX_AU_FOX_ONLY, settings.autoUpdateFoxOnly)
+            set(FOX_AU_INTERVAL, settings.autoUpdateIntervalHours)
+            set(FOX_AU_WIFI, settings.autoUpdateWifiOnly)
+            set(FOX_AU_CHARGING, settings.autoUpdateCharging)
+            set(FOX_SELF_UPDATE, settings.selfUpdate)
             return this.toPreferences()
         }
     }

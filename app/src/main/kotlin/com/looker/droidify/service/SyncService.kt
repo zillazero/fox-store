@@ -608,10 +608,21 @@ class SyncService : ConnectionService<SyncService.Binder>() {
                         updatesAvailableNotification(this, updates),
                     )
                 }
-                if (settings.autoUpdate) {
+                // FOX Store: Auto-Update (nur FOX-Apps oder alle) + Selbst-Update des Stores
+                val foxRepoId = Database.foxRepoId()
+                val toInstall = updates.filter { item ->
+                    when {
+                        item.packageName == packageName ->
+                            settings.selfUpdate && item.repositoryId == foxRepoId
+                        !settings.autoUpdate -> false
+                        settings.autoUpdateFoxOnly -> item.repositoryId == foxRepoId
+                        else -> true
+                    }
+                }
+                if (toInstall.isNotEmpty()) {
                     autoUpdating = true
-                    autoUpdateStartedFor = updates.map { it.packageName }
-                    updateAllAppsInternal(updates)
+                    autoUpdateStartedFor = toInstall.map { it.packageName }
+                    updateAllAppsInternal(toInstall)
                 }
             }
 

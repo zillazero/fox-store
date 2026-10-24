@@ -194,6 +194,64 @@ fun SettingsScreen(
             }
 
             item {
+                SelectionSettingItem(
+                    title = stringResource(R.string.fox_auto_update_scope),
+                    selectedValue = settings.autoUpdateFoxOnly,
+                    values = listOf(true, false),
+                    onValueSelected = viewModel::setAutoUpdateFoxOnly,
+                    valueToString = {
+                        if (it) stringResource(R.string.fox_auto_update_scope_fox)
+                        else stringResource(R.string.fox_auto_update_scope_all)
+                    },
+                )
+            }
+
+            item {
+                SelectionSettingItem(
+                    title = stringResource(R.string.fox_auto_update_interval),
+                    selectedValue = settings.autoUpdateIntervalHours,
+                    values = listOf(3, 6, 12, 24, 48),
+                    onValueSelected = viewModel::setAutoUpdateInterval,
+                    valueToString = { stringResource(R.string.fox_auto_update_interval_value, it) },
+                )
+            }
+
+            item {
+                SwitchSettingItem(
+                    title = stringResource(R.string.fox_auto_update_wifi),
+                    description = stringResource(R.string.fox_auto_update_wifi_desc),
+                    checked = settings.autoUpdateWifiOnly,
+                    onCheckedChange = viewModel::setAutoUpdateWifiOnly,
+                )
+            }
+
+            item {
+                SwitchSettingItem(
+                    title = stringResource(R.string.fox_auto_update_charging),
+                    description = stringResource(R.string.fox_auto_update_charging_desc),
+                    checked = settings.autoUpdateCharging,
+                    onCheckedChange = viewModel::setAutoUpdateCharging,
+                )
+            }
+
+            item {
+                SwitchSettingItem(
+                    title = stringResource(R.string.fox_self_update),
+                    description = stringResource(R.string.fox_self_update_desc),
+                    checked = settings.selfUpdate,
+                    onCheckedChange = viewModel::setSelfUpdate,
+                )
+            }
+
+            item {
+                Text(
+                    text = stringResource(R.string.fox_auto_update_note),
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp),
+                )
+            }
+
+            item {
                 SwitchSettingItem(
                     title = stringResource(R.string.notify_about_updates),
                     description = stringResource(R.string.notify_about_updates_summary),

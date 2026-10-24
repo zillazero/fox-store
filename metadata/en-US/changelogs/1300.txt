@@ -1,0 +1,5 @@
+FOX Store 1.3.0
+- Startseite: eigener Bereich „FOX Apps“ oben, darunter „Weitere freie Apps“; FOX-Badge in Listen und Suche (FOX-Apps zuerst)
+- Auto-Update per WorkManager: nur FOX-Apps oder alle, Intervall, nur WLAN, nur beim Laden; ab Android 12 still für vom Store installierte Apps
+- Store-Selbst-Update aus apps.pk187.site
+- Performance: DB-Indizes, Bereinigung verwaister Einträge, PRAGMA optimize, WebP-Assets, kleinerer Bild-Cache auf Low-RAM-TV-Sticks

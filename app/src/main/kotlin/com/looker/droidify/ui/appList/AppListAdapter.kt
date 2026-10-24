@@ -42,10 +42,11 @@ class AppListAdapter(
         val status = itemView.findViewById<TextView>(R.id.status)!!
         val summary = itemView.findViewById<TextView>(R.id.summary)!!
         val icon = itemView.findViewById<ShapeableImageView>(R.id.icon)!!
+        val foxBadge = itemView.findViewById<TextView>(R.id.fox_badge)!!
 
         init {
             itemView.setOnClickListener {
-                log(measureTimeMillis { onClick(getPackageName(absoluteAdapterPosition)) }, "Bench")
+                log(measureTimeMillis { onClick(getPackageName(bindingAdapterPosition)) }, "Bench")
             }
         }
     }
@@ -158,6 +159,7 @@ class AppListAdapter(
                 holder.summary.isVisible = productItem.summary.isNotEmpty() &&
                     productItem.name != productItem.summary
                 val repository = repositories[productItem.repositoryId]
+                holder.foxBadge.isVisible = repository != null && Repository.isFoxRepo(repository.address)
                 if (repository != null) {
                     val iconUrl = productItem.icon(view = holder.icon, repository = repository)
                     holder.icon.load(iconUrl) {

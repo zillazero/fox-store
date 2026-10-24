@@ -297,4 +297,22 @@
     <string name="scan_qr_code">Scan QR code</string>
     <string name="qr_camera_permission_required">Camera permission is required to scan QR codes</string>
     <string name="qr_scan_failed">Failed to scan QR code</string>
+    <!-- FOX Store 1.3.0 -->
+    <string name="fox_badge" translatable="false">FOX</string>
+    <string name="fox_apps_title">FOX Apps</string>
+    <string name="fox_apps_subtitle">Offizielle Apps aus der FOX-Hauptquelle apps.pk187.site</string>
+    <string name="fox_more_free_apps">Weitere freie Apps</string>
+    <string name="fox_more_free_apps_summary">Aus F-Droid und weiteren freien Quellen – nicht von FOX</string>
+    <string name="fox_auto_update_scope">Automatisch aktualisieren</string>
+    <string name="fox_auto_update_scope_fox">Nur FOX-Apps</string>
+    <string name="fox_auto_update_scope_all">Alle Apps</string>
+    <string name="fox_auto_update_interval">Prüfintervall</string>
+    <string name="fox_auto_update_interval_value">Alle %1$d Stunden</string>
+    <string name="fox_auto_update_wifi">Nur über WLAN</string>
+    <string name="fox_auto_update_wifi_desc">Updates nur in nicht getakteten Netzen laden</string>
+    <string name="fox_auto_update_charging">Nur beim Laden</string>
+    <string name="fox_auto_update_charging_desc">Updates nur prüfen und installieren, während das Gerät lädt</string>
+    <string name="fox_self_update">FOX Store selbst aktualisieren</string>
+    <string name="fox_self_update_desc">Neue Store-Versionen aus apps.pk187.site automatisch installieren</string>
+    <string name="fox_auto_update_note">Ab Android 12 laufen Updates von Apps, die der FOX Store installiert hat, still im Hintergrund. Sonst erscheint eine Benachrichtigung zum Installieren mit einem Tipp.</string>
 </resources>

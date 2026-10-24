@@ -54,6 +54,9 @@ class AppListViewModel
         .asStateFlow(emptyList())
 
     @OptIn(ExperimentalCoroutinesApi::class)
+    val foxApps = Database.ProductAdapter.getFoxAppsStream().asStateFlow(emptyList())
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     val showUpdateAllButton = skipSignatureStream.flatMapLatest { skip ->
         Database.ProductAdapter
             .getUpdatesStream(skip)
@@ -78,6 +81,12 @@ data class AppListState(
             section = sections,
             order = sortOrder,
             skipSignatureCheck = skipSignatureCheck,
+            // FOX Store: Startseite zeigt FOX-Apps im eigenen Bereich oben, darunter nur weitere Quellen.
+            foxMode = if (searchQuery.isEmpty() && sections is All) {
+                Database.FoxMode.EXCLUDE
+            } else {
+                Database.FoxMode.FIRST
+            },
         )
 
         AppListFragment.Source.INSTALLED -> Installed(

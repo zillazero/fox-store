@@ -68,6 +68,18 @@ class AppListFragment() : Fragment(), CursorOwner.Callback {
     private var layoutManagerState: Parcelable? = null
 
     private var searchQuery: String = ""
+    private var foxHeroAdapter: FoxHeroAdapter? = null
+    private var foxHeaderAdapter: FoxSectionHeaderAdapter? = null
+    private var foxItems: List<com.looker.droidify.model.ProductItem> = emptyList()
+
+    /** Hero nur auf der ungefilterten Startseite; bei Suche/Kategorie stehen FOX-Apps oben in der Liste. */
+    private fun updateFoxHero() {
+        val home = searchQuery.isEmpty() &&
+            viewModel.state.value.sections is com.looker.droidify.model.ProductItem.Section.All
+        val list = if (home) foxItems else emptyList()
+        foxHeroAdapter?.items = list
+        foxHeaderAdapter?.visible = list.isNotEmpty()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,7 +100,15 @@ class AppListFragment() : Fragment(), CursorOwner.Callback {
             setHasFixedSize(true)
             recycledViewPool.setMaxRecycledViews(AppListAdapter.ViewType.PRODUCT.ordinal, 30)
             appListAdapter = AppListAdapter(source, mainActivity::navigateProduct)
-            adapter = appListAdapter
+            if (source == Source.AVAILABLE) {
+                foxHeroAdapter = FoxHeroAdapter(mainActivity::navigateProduct)
+                foxHeaderAdapter = FoxSectionHeaderAdapter()
+                adapter = androidx.recyclerview.widget.ConcatAdapter(
+                    foxHeroAdapter, foxHeaderAdapter, appListAdapter,
+                )
+            } else {
+                adapter = appListAdapter
+            }
             systemBarsPadding()
             RecyclerFastScroller(this)
         }
@@ -118,10 +138,19 @@ class AppListFragment() : Fragment(), CursorOwner.Callback {
                 launch {
                     viewModel.reposStream.collect { repos ->
                         appListAdapter.repositories = repos.associateBy { it.id }
+                        foxHeroAdapter?.repository =
+                            repos.firstOrNull { com.looker.droidify.model.Repository.isFoxRepo(it.address) }
+                    }
+                }
+                if (source == Source.AVAILABLE) launch {
+                    viewModel.foxApps.collect {
+                        foxItems = it
+                        updateFoxHero()
                     }
                 }
                 launch {
                     viewModel.state.collect {
+                        updateFoxHero()
                         mainActivity.cursorOwner.attach(
                             callback = this@AppListFragment,
                             request = it.toRequest(source, searchQuery),
@@ -171,6 +200,7 @@ class AppListFragment() : Fragment(), CursorOwner.Callback {
     fun setSearchQuery(newSearchQuery: String) {
         if (view != null) {
             searchQuery = newSearchQuery
+            updateFoxHero()
             mainActivity.cursorOwner.attach(
                 callback = this,
                 request = viewModel.state.value.toRequest(source, searchQuery),
